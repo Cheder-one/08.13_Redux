@@ -1,47 +1,13 @@
 import { useEffect, useState } from "react";
+import { actionTypes, createStore, taskReducer } from "./store";
 
-function taskReducer(state, action) {
-  switch (action.type) {
-    case "tasks/completed":
-      state = state.map((task) => {
-        return task.id === action.payload.id
-          ? { ...task, completed: true }
-          : task;
-      });
-      break;
-
-    default:
-      break;
-  }
-
-  return state;
-}
-
-function createStore(reducer, initState) {
-  let state = initState;
-  let listeners = [];
-
-  function getState() {
-    return state;
-  }
-
-  function dispatch(action) {
-    state = reducer(state, action);
-    // Notify all listeners that the state has changed.
-    listeners.forEach((listener) => listener());
-  }
-
-  function subscribe(listener) {
-    listeners.push(listener);
-  }
-
-  return { getState, dispatch, subscribe };
-}
+const { TASK_UPDATED, ADD_TASK } = actionTypes;
 
 const initState = [
-  { id: 1, description: "Task 1", completed: false },
-  { id: 2, description: "Task 2", completed: false },
+  { id: 1, title: "Task 1", completed: false },
+  { id: 2, title: "Task 2", completed: false },
 ];
+
 const store = createStore(taskReducer, initState);
 
 const App = () => {
@@ -54,23 +20,32 @@ const App = () => {
     });
   }, []);
 
-  // const actionAddTask = {
-  //   type: "ADD_TASK",
-  //   payload: {
-  //     id: 3,
-  //     description: "Task 2",
-  //     completed: false,
-  //   },
-  // };
-
-  const handleCompleteTask = (taskId) => {
-    const actionCompleteTask = {
-      type: "tasks/completed",
-      payload: { id: taskId },
+  const completeTask = (taskId) => {
+    const action = {
+      type: TASK_UPDATED,
+      payload: { id: taskId, completed: true },
     };
+    store.dispatch(action);
+  };
 
-    store.dispatch(actionCompleteTask);
-    console.table(store.getState());
+  const changeTitle = (taskId) => {
+    const action = {
+      type: TASK_UPDATED,
+      payload: { id: taskId, title: `New Title ${taskId}` },
+    };
+    store.dispatch(action);
+  };
+
+  const addTask = () => {
+    const action = {
+      type: ADD_TASK,
+      payload: {
+        id: state.length + 1,
+        title: "New Task",
+        completed: false,
+      },
+    };
+    store.dispatch(action);
   };
 
   return (
@@ -79,12 +54,14 @@ const App = () => {
       <p />
       {state.map((task) => (
         <li key={task.id}>
-          <span>{task.description}</span>
-          <span> {task.completed ? "✅" : "❌"}</span>
-          <button onClick={() => handleCompleteTask(task.id)}>Complete</button>
+          <span>{task.title}</span>
+          <span> {task.completed ? "✅" : "❌"}</span> <p />
+          <button onClick={() => completeTask(task.id)}>Complete</button>{" "}
+          <button onClick={() => changeTitle(task.id)}>Change Title</button>{" "}
           <hr />
         </li>
       ))}
+      <button onClick={addTask}>Add Task</button>
     </>
   );
 };
