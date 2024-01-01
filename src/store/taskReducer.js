@@ -1,6 +1,6 @@
 import actionTypes from "./actionTypes";
 
-const { TASK_UPDATED, ADD_TASK } = actionTypes;
+const { TASK_UPDATED, TASK_ADDED } = actionTypes;
 
 function taskReducer(state, action) {
   switch (action.type) {
@@ -10,7 +10,7 @@ function taskReducer(state, action) {
           ? { ...task, ...action.payload }
           : task;
       });
-    case ADD_TASK:
+    case TASK_ADDED:
       return [...state, action.payload];
 
     default:
