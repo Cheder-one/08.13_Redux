@@ -14,10 +14,8 @@ function taskReducer(state, action) {
       return [...state, action.payload];
 
     default:
-      break;
+      return state;
   }
-
-  return state;
 }
 
 export default taskReducer;
