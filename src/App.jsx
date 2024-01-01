@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { actionTypes, createStore, taskReducer } from "./store";
 
-const { TASK_UPDATED, ADD_TASK } = actionTypes;
+const { TASK_UPDATED, TASK_ADDED } = actionTypes;
 
 const initState = [
   { id: 1, title: "Task 1", completed: false },
@@ -38,7 +38,7 @@ const App = () => {
 
   const addTask = () => {
     const action = {
-      type: ADD_TASK,
+      type: TASK_ADDED,
       payload: {
         id: state.length + 1,
         title: "New Task",
